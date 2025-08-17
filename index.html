@@ -19,69 +19,76 @@
   </div>
   <div id="calendar"></div>
 
-  <script>
-    const sheetCSV = "https://docs.google.com/spreadsheets/d/1XP1gcvpECu4iNKQmnzNixb4Rux7fKZj9wfYBNLbJxAo/edit?usp=sharing";
+ <script>
+  // Only fetch the ActualAvailability CSV
+  const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSj8qL6nzQ57q45IRZf5iWzyBPe_9mZwvvYH8zRe4CJdfc92qFTIs67jwv-sfWx6WM3U-tWeM0cDRE9/pub?gid=0&single=true&output=csv";
 
-    async function loadData() {
-      const res = await fetch(sheetCSV);
-      const text = await res.text();
-      const rows = text.split("\n").slice(1);
-      let events = [], tutors = new Set();
+  async function loadData() {
+    const res = await fetch(sheetCSV);
+    const text = await res.text();
 
-      rows.forEach(row => {
-        const cols = row.split(",");
-        if (cols.length < 3) return;
-        let tutor = cols[0].trim();
-        let date = cols[1].trim();
-        let slots = cols[2].trim();
-        tutors.add(tutor);
+    const rows = text.split("\n").slice(1); // skip header
+    let events = [];
+    let tutors = new Set();
 
-        if (slots && slots !== "Busy all day") {
-          slots.split(",").forEach(slot => {
-            let [start, end] = slot.split("-");
-            events.push({
-              title: tutor,
-              start: date + "T" + start,
-              end: date + "T" + end,
-              extendedProps: { tutor }
-            });
+    rows.forEach(row => {
+      const cols = row.split(",");
+      if (cols.length < 3) return;
+
+      const tutor = cols[0].trim();
+      const date = cols[1].trim();
+      const slots = cols[2].trim();
+
+      tutors.add(tutor);
+
+      if (slots && slots !== "Busy all day") {
+        slots.split(",").forEach(slot => {
+          const [start, end] = slot.split("-");
+          events.push({
+            title: tutor,
+            start: date + "T" + start,
+            end: date + "T" + end,
+            extendedProps: { tutor }
           });
-        }
-      });
-
-      return { events, tutors: Array.from(tutors) };
-    }
-
-    document.addEventListener("DOMContentLoaded", async function() {
-      const { events, tutors } = await loadData();
-      const tutorFilter = document.getElementById("tutorFilter");
-      tutors.forEach(t => {
-        let opt = document.createElement("option");
-        opt.value = t; opt.textContent = t;
-        tutorFilter.appendChild(opt);
-      });
-
-      const calendarEl = document.getElementById("calendar");
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: events
-      });
-
-      calendar.render();
-
-      tutorFilter.addEventListener("change", () => {
-        const val = tutorFilter.value;
-        calendar.getEvents().forEach(ev => {
-          ev.setProp('display', (val === "all" || ev.extendedProps.tutor === val) ? 'auto' : 'none');
         });
+      }
+    });
+
+    return { events, tutors: Array.from(tutors) };
+  }
+
+  document.addEventListener("DOMContentLoaded", async function() {
+    const { events, tutors } = await loadData();
+
+    const tutorFilter = document.getElementById("tutorFilter");
+    tutors.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t; opt.textContent = t;
+      tutorFilter.appendChild(opt);
+    });
+
+    const calendarEl = document.getElementById("calendar");
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: events
+    });
+
+    calendar.render();
+
+    // Filter by tutor dropdown
+    tutorFilter.addEventListener("change", () => {
+      const val = tutorFilter.value;
+      calendar.getEvents().forEach(ev => {
+        ev.setProp('display', (val === "all" || ev.extendedProps.tutor === val) ? 'auto' : 'none');
       });
     });
-  </script>
+  });
+</script>
 </body>
 </html>
 
