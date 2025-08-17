@@ -116,31 +116,221 @@
             font-size: 1.1rem;
         }
 
-        .filter-group select {
+        /* Multi-select tutor filter styles */
+        .tutor-filter-container {
+            position: relative;
             width: 100%;
-            max-width: 300px;
-            padding: 16px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-            color: #2d3748;
-            cursor: pointer;
+            max-width: 500px;
         }
 
-        .filter-group select:focus {
-            outline: none;
+        .selected-tutors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 50px;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: text;
+            transition: all 0.3s ease;
+            align-items: flex-start;
+            align-content: flex-start;
+        }
+
+        .selected-tutors:focus-within {
             border-color: #667eea;
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             transform: translateY(-2px);
         }
 
-        .filter-group select:hover {
+        .selected-tutors:hover {
             border-color: #cbd5e0;
             transform: translateY(-1px);
+        }
+
+        .tutor-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s ease;
+            animation: chipSlideIn 0.3s ease-out;
+        }
+
+        @keyframes chipSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .tutor-chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .chip-remove {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .chip-remove:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .tutor-search-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 4px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .tutor-search-input::placeholder {
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .tutor-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .tutor-dropdown.show {
+            display: block;
+            animation: dropdownSlide 0.2s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tutor-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tutor-option:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tutor-option.selected {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .tutor-option::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .clear-all-btn {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+            margin-top: 15px;
+        }
+
+        .clear-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .clear-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .filter-status {
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            color: #4c51bf;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        .filter-status.show {
+            display: block;
+            animation: statusSlide 0.3s ease-out;
+        }
+
+        @keyframes statusSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .calendar-container {
@@ -444,7 +634,7 @@
                 padding: 20px;
             }
             
-            .filter-group select {
+            .tutor-filter-container {
                 max-width: 100%;
             }
             
@@ -471,6 +661,15 @@
                 justify-content: center;
                 gap: 5px;
             }
+
+            .selected-tutors {
+                min-height: 60px;
+            }
+
+            .tutor-chip {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -481,6 +680,11 @@
             .fc-event {
                 font-size: 0.75rem;
                 padding: 2px 4px;
+            }
+
+            .tutor-search-input {
+                min-width: 100px;
+                font-size: 14px;
             }
         }
 
@@ -521,6 +725,10 @@
             transform: translateY(-1px);
         }
 
+        .legend-item.filtered {
+            opacity: 0.3;
+        }
+
         .legend-color {
             width: 16px;
             height: 16px;
@@ -559,10 +767,19 @@
         <!-- Filters -->
         <div class="filters-container">
             <div class="filter-group">
-                <label for="tutorFilter">🎓 Filter by Tutor:</label>
-                <select id="tutorFilter">
-                    <option value="all">All Tutors</option>
-                </select>
+                <label for="tutorFilter">🎓 Filter by Tutors:</label>
+                <div class="tutor-filter-container">
+                    <div class="selected-tutors" id="selectedTutors">
+                        <input type="text" class="tutor-search-input" id="tutorSearchInput" placeholder="Type tutor name to add filter...">
+                    </div>
+                    <div class="tutor-dropdown" id="tutorDropdown">
+                        <!-- Dropdown options will be populated by JavaScript -->
+                    </div>
+                </div>
+                <button class="clear-all-btn" id="clearAllBtn" disabled>Clear All Filters</button>
+                <div class="filter-status" id="filterStatus">
+                    <!-- Filter status will be shown here -->
+                </div>
             </div>
         </div>
 
@@ -592,6 +809,8 @@
         let calendar;
         let allEvents = [];
         let tutorColors = {};
+        let allTutors = [];
+        let selectedTutors = new Set();
         
         // Predefined color schemes for tutors
         const colorSchemes = [
@@ -734,6 +953,7 @@
             tutors.forEach(tutor => {
                 const legendItem = document.createElement('div');
                 legendItem.className = 'legend-item';
+                legendItem.setAttribute('data-tutor', tutor);
                 
                 const colorBox = document.createElement('div');
                 colorBox.className = 'legend-color';
@@ -766,25 +986,223 @@
             document.head.appendChild(style);
         }
 
-        function formatEventTitle(eventInfo) {
-            const tutor = eventInfo.event.extendedProps.tutor;
-            const timeSlot = eventInfo.event.extendedProps.timeSlot;
-            return `${tutor}\n${timeSlot}`;
+        function createTutorChip(tutorName) {
+            const chip = document.createElement('div');
+            chip.className = 'tutor-chip';
+            chip.setAttribute('data-tutor', tutorName);
+            
+            const label = document.createElement('span');
+            label.textContent = tutorName;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'chip-remove';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => removeTutorFilter(tutorName);
+            
+            chip.appendChild(label);
+            chip.appendChild(removeBtn);
+            
+            return chip;
+        }
+
+        function addTutorFilter(tutorName) {
+            if (!selectedTutors.has(tutorName)) {
+                selectedTutors.add(tutorName);
+                
+                const selectedContainer = document.getElementById('selectedTutors');
+                const searchInput = document.getElementById('tutorSearchInput');
+                
+                const chip = createTutorChip(tutorName);
+                selectedContainer.insertBefore(chip, searchInput);
+                
+                updateFilter();
+                updateClearButton();
+                updateFilterStatus();
+                hideDropdown();
+                searchInput.value = '';
+            }
+        }
+
+        function removeTutorFilter(tutorName) {
+            selectedTutors.delete(tutorName);
+            
+            const chip = document.querySelector(`.tutor-chip[data-tutor="${tutorName}"]`);
+            if (chip) {
+                chip.style.animation = 'chipSlideIn 0.3s ease-out reverse';
+                setTimeout(() => chip.remove(), 300);
+            }
+            
+            updateFilter();
+            updateClearButton();
+            updateFilterStatus();
+        }
+
+        function clearAllFilters() {
+            selectedTutors.clear();
+            
+            const chips = document.querySelectorAll('.tutor-chip');
+            chips.forEach(chip => {
+                chip.style.animation = 'chipSlideIn 0.3s ease-out reverse';
+                setTimeout(() => chip.remove(), 300);
+            });
+            
+            setTimeout(() => {
+                updateFilter();
+                updateClearButton();
+                updateFilterStatus();
+            }, 300);
+        }
+
+        function updateFilter() {
+            if (!calendar) return;
+            
+            calendar.getEvents().forEach(event => {
+                const eventTutor = event.extendedProps.tutor;
+                
+                if (selectedTutors.size === 0 || selectedTutors.has(eventTutor)) {
+                    event.setProp('display', 'auto');
+                } else {
+                    event.setProp('display', 'none');
+                }
+            });
+            
+            // Update legend visibility
+            const legendItems = document.querySelectorAll('.legend-item');
+            legendItems.forEach(item => {
+                const tutorName = item.getAttribute('data-tutor');
+                if (selectedTutors.size === 0 || selectedTutors.has(tutorName)) {
+                    item.classList.remove('filtered');
+                } else {
+                    item.classList.add('filtered');
+                }
+            });
+        }
+
+        function updateClearButton() {
+            const clearBtn = document.getElementById('clearAllBtn');
+            clearBtn.disabled = selectedTutors.size === 0;
+        }
+
+        function updateFilterStatus() {
+            const statusDiv = document.getElementById('filterStatus');
+            
+            if (selectedTutors.size === 0) {
+                statusDiv.classList.remove('show');
+            } else {
+                const tutorList = Array.from(selectedTutors).join(', ');
+                const eventCount = calendar ? calendar.getEvents().filter(e => e.display !== 'none').length : 0;
+                statusDiv.innerHTML = `Showing ${eventCount} availability slots for: ${tutorList}`;
+                statusDiv.classList.add('show');
+            }
+        }
+
+        function showDropdown() {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.classList.add('show');
+        }
+
+        function hideDropdown() {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.classList.remove('show');
+        }
+
+        function populateDropdown(filteredTutors = allTutors) {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.innerHTML = '';
+            
+            filteredTutors.forEach(tutor => {
+                const option = document.createElement('div');
+                option.className = 'tutor-option';
+                option.textContent = tutor;
+                
+                if (selectedTutors.has(tutor)) {
+                    option.classList.add('selected');
+                }
+                
+                option.onclick = () => {
+                    if (!selectedTutors.has(tutor)) {
+                        addTutorFilter(tutor);
+                    }
+                };
+                
+                dropdown.appendChild(option);
+            });
+        }
+
+        function setupTutorFilter() {
+            const searchInput = document.getElementById('tutorSearchInput');
+            const selectedContainer = document.getElementById('selectedTutors');
+            const clearBtn = document.getElementById('clearAllBtn');
+            
+            // Focus handling
+            selectedContainer.addEventListener('click', (e) => {
+                if (e.target === selectedContainer) {
+                    searchInput.focus();
+                }
+            });
+            
+            // Search input handling
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                if (searchTerm) {
+                    const filteredTutors = allTutors.filter(tutor => 
+                        tutor.toLowerCase().includes(searchTerm) && !selectedTutors.has(tutor)
+                    );
+                    populateDropdown(filteredTutors);
+                    showDropdown();
+                } else {
+                    hideDropdown();
+                }
+            });
+            
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value) {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filteredTutors = allTutors.filter(tutor => 
+                        tutor.toLowerCase().includes(searchTerm) && !selectedTutors.has(tutor)
+                    );
+                    populateDropdown(filteredTutors);
+                    showDropdown();
+                }
+            });
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const searchTerm = searchInput.value.trim();
+                    const exactMatch = allTutors.find(tutor => 
+                        tutor.toLowerCase() === searchTerm.toLowerCase()
+                    );
+                    
+                    if (exactMatch && !selectedTutors.has(exactMatch)) {
+                        addTutorFilter(exactMatch);
+                    }
+                } else if (e.key === 'Escape') {
+                    hideDropdown();
+                    searchInput.blur();
+                }
+            });
+            
+            // Clear all button
+            clearBtn.addEventListener('click', clearAllFilters);
+            
+            // Click outside to hide dropdown
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.tutor-filter-container')) {
+                    hideDropdown();
+                }
+            });
         }
 
         document.addEventListener("DOMContentLoaded", async function() {
             try {
                 const { events, tutors } = await loadData();
                 allEvents = events;
+                allTutors = tutors;
 
-                // Populate tutor filter dropdown
-                const tutorFilter = document.getElementById("tutorFilter");
-                tutors.forEach(tutor => {
-                    const option = document.createElement("option");
-                    option.value = tutor;
-                    option.textContent = tutor;
-                    tutorFilter.appendChild(option);
-                });
+                // Setup tutor filter
+                setupTutorFilter();
 
                 // Create tutor legend
                 createTutorLegend(tutors);
@@ -828,30 +1246,6 @@
                 });
 
                 calendar.render();
-
-                // Filter by tutor dropdown functionality
-                tutorFilter.addEventListener("change", function() {
-                    const selectedTutor = this.value;
-                    
-                    calendar.getEvents().forEach(event => {
-                        if (selectedTutor === "all" || event.extendedProps.tutor === selectedTutor) {
-                            event.setProp('display', 'auto');
-                        } else {
-                            event.setProp('display', 'none');
-                        }
-                    });
-                    
-                    // Update legend visibility
-                    const legendItems = document.querySelectorAll('.legend-item');
-                    legendItems.forEach(item => {
-                        const tutorName = item.querySelector('span').textContent;
-                        if (selectedTutor === "all" || tutorName === selectedTutor) {
-                            item.style.opacity = '1';
-                        } else {
-                            item.style.opacity = '0.3';
-                        }
-                    });
-                });
 
                 // Handle responsive view changes
                 function handleResize() {
