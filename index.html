@@ -116,91 +116,31 @@
             font-size: 1.1rem;
         }
 
-        .filter-actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            border: 2px solid #667eea;
-            background: transparent;
-            color: #667eea;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        .filter-group select {
+            width: 100%;
+            max-width: 300px;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 16px;
             font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .tutor-checkboxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: rgba(248, 250, 252, 0.8);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .checkbox-item:hover {
-            background: rgba(248, 250, 252, 1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .checkbox-item.selected {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #667eea;
-            cursor: pointer;
-        }
-
-        .checkbox-item .tutor-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            flex-shrink: 0;
-        }
-
-        .checkbox-item .tutor-name {
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.9);
             color: #2d3748;
-            flex-grow: 1;
+            cursor: pointer;
         }
 
-        .selected-count {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 15px;
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .filter-group select:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
         }
 
         .calendar-container {
@@ -504,12 +444,8 @@
                 padding: 20px;
             }
             
-            .tutor-checkboxes {
-                grid-template-columns: 1fr;
-            }
-            
-            .filter-actions {
-                justify-content: center;
+            .filter-group select {
+                max-width: 100%;
             }
             
             .connection-status {
@@ -545,14 +481,6 @@
             .fc-event {
                 font-size: 0.75rem;
                 padding: 2px 4px;
-            }
-
-            .tutor-checkboxes {
-                gap: 10px;
-            }
-
-            .checkbox-item {
-                padding: 10px 12px;
             }
         }
 
@@ -593,10 +521,6 @@
             transform: translateY(-1px);
         }
 
-        .legend-item.dimmed {
-            opacity: 0.3;
-        }
-
         .legend-color {
             width: 16px;
             height: 16px;
@@ -635,20 +559,10 @@
         <!-- Filters -->
         <div class="filters-container">
             <div class="filter-group">
-                <label>🎓 Filter by Tutors:</label>
-                
-                <div class="filter-actions">
-                    <button class="filter-btn" id="selectAll">Select All</button>
-                    <button class="filter-btn" id="selectNone">Select None</button>
-                </div>
-                
-                <div id="tutorCheckboxes" class="tutor-checkboxes">
-                    <!-- Checkboxes will be populated by JavaScript -->
-                </div>
-                
-                <div id="selectedCount" class="selected-count">
-                    All tutors selected
-                </div>
+                <label for="tutorFilter">🎓 Filter by Tutor:</label>
+                <select id="tutorFilter">
+                    <option value="all">All Tutors</option>
+                </select>
             </div>
         </div>
 
@@ -678,7 +592,6 @@
         let calendar;
         let allEvents = [];
         let tutorColors = {};
-        let selectedTutors = new Set();
         
         // Predefined color schemes for tutors
         const colorSchemes = [
@@ -814,47 +727,6 @@
             }
         }
 
-        function createTutorCheckboxes(tutors) {
-            const checkboxContainer = document.getElementById('tutorCheckboxes');
-            checkboxContainer.innerHTML = '';
-            
-            tutors.forEach(tutor => {
-                const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'checkbox-item selected';
-                
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `tutor-${tutor}`;
-                checkbox.value = tutor;
-                checkbox.checked = true;
-                
-                const colorBox = document.createElement('div');
-                colorBox.className = 'tutor-color';
-                colorBox.style.background = tutorColors[tutor] || colorSchemes[0];
-                
-                const label = document.createElement('label');
-                label.className = 'tutor-name';
-                label.textContent = tutor;
-                label.setAttribute('for', `tutor-${tutor}`);
-                
-                checkboxItem.appendChild(checkbox);
-                checkboxItem.appendChild(colorBox);
-                checkboxItem.appendChild(label);
-                
-                // Add event listeners
-                checkbox.addEventListener('change', handleTutorFilterChange);
-                checkboxItem.addEventListener('click', (e) => {
-                    if (e.target !== checkbox) {
-                        checkbox.checked = !checkbox.checked;
-                        handleTutorFilterChange({ target: checkbox });
-                    }
-                });
-                
-                checkboxContainer.appendChild(checkboxItem);
-                selectedTutors.add(tutor);
-            });
-        }
-
         function createTutorLegend(tutors) {
             const legendContainer = document.getElementById('tutorLegend');
             legendContainer.innerHTML = '';
@@ -862,7 +734,6 @@
             tutors.forEach(tutor => {
                 const legendItem = document.createElement('div');
                 legendItem.className = 'legend-item';
-                legendItem.id = `legend-${tutor}`;
                 
                 const colorBox = document.createElement('div');
                 colorBox.className = 'legend-color';
@@ -895,92 +766,6 @@
             document.head.appendChild(style);
         }
 
-        function updateSelectedCount() {
-            const selectedCount = document.getElementById('selectedCount');
-            const totalTutors = document.querySelectorAll('#tutorCheckboxes input[type="checkbox"]').length;
-            const selectedCount_ = selectedTutors.size;
-            
-            if (selectedCount_ === totalTutors) {
-                selectedCount.textContent = 'All tutors selected';
-            } else if (selectedCount_ === 0) {
-                selectedCount.textContent = 'No tutors selected';
-            } else {
-                selectedCount.textContent = `${selectedCount_} of ${totalTutors} tutors selected`;
-            }
-        }
-
-        function handleTutorFilterChange(event) {
-            const tutor = event.target.value;
-            const isChecked = event.target.checked;
-            const checkboxItem = event.target.closest('.checkbox-item');
-            
-            if (isChecked) {
-                selectedTutors.add(tutor);
-                checkboxItem.classList.add('selected');
-            } else {
-                selectedTutors.delete(tutor);
-                checkboxItem.classList.remove('selected');
-            }
-            
-            updateSelectedCount();
-            filterCalendarEvents();
-            updateLegendVisibility();
-        }
-
-        function filterCalendarEvents() {
-            if (!calendar) return;
-            
-            calendar.getEvents().forEach(event => {
-                const eventTutor = event.extendedProps.tutor;
-                if (selectedTutors.size === 0 || selectedTutors.has(eventTutor)) {
-                    event.setProp('display', 'auto');
-                } else {
-                    event.setProp('display', 'none');
-                }
-            });
-        }
-
-        function updateLegendVisibility() {
-            const legendItems = document.querySelectorAll('.legend-item');
-            legendItems.forEach(item => {
-                const tutorName = item.querySelector('span').textContent;
-                if (selectedTutors.size === 0 || selectedTutors.has(tutorName)) {
-                    item.classList.remove('dimmed');
-                } else {
-                    item.classList.add('dimmed');
-                }
-            });
-        }
-
-        function selectAllTutors() {
-            const checkboxes = document.querySelectorAll('#tutorCheckboxes input[type="checkbox"]');
-            selectedTutors.clear();
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = true;
-                checkbox.closest('.checkbox-item').classList.add('selected');
-                selectedTutors.add(checkbox.value);
-            });
-            
-            updateSelectedCount();
-            filterCalendarEvents();
-            updateLegendVisibility();
-        }
-
-        function selectNoTutors() {
-            const checkboxes = document.querySelectorAll('#tutorCheckboxes input[type="checkbox"]');
-            selectedTutors.clear();
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.closest('.checkbox-item').classList.remove('selected');
-            });
-            
-            updateSelectedCount();
-            filterCalendarEvents();
-            updateLegendVisibility();
-        }
-
         function formatEventTitle(eventInfo) {
             const tutor = eventInfo.event.extendedProps.tutor;
             const timeSlot = eventInfo.event.extendedProps.timeSlot;
@@ -992,16 +777,18 @@
                 const { events, tutors } = await loadData();
                 allEvents = events;
 
-                // Create tutor checkboxes
-                createTutorCheckboxes(tutors);
+                // Populate tutor filter dropdown
+                const tutorFilter = document.getElementById("tutorFilter");
+                tutors.forEach(tutor => {
+                    const option = document.createElement("option");
+                    option.value = tutor;
+                    option.textContent = tutor;
+                    tutorFilter.appendChild(option);
+                });
 
                 // Create tutor legend
                 createTutorLegend(tutors);
                 applyTutorColors();
-
-                // Set up filter action buttons
-                document.getElementById('selectAll').addEventListener('click', selectAllTutors);
-                document.getElementById('selectNone').addEventListener('click', selectNoTutors);
 
                 // Initialize FullCalendar
                 const calendarEl = document.getElementById("calendar");
@@ -1042,8 +829,29 @@
 
                 calendar.render();
 
-                // Initialize the selected count display
-                updateSelectedCount();
+                // Filter by tutor dropdown functionality
+                tutorFilter.addEventListener("change", function() {
+                    const selectedTutor = this.value;
+                    
+                    calendar.getEvents().forEach(event => {
+                        if (selectedTutor === "all" || event.extendedProps.tutor === selectedTutor) {
+                            event.setProp('display', 'auto');
+                        } else {
+                            event.setProp('display', 'none');
+                        }
+                    });
+                    
+                    // Update legend visibility
+                    const legendItems = document.querySelectorAll('.legend-item');
+                    legendItems.forEach(item => {
+                        const tutorName = item.querySelector('span').textContent;
+                        if (selectedTutor === "all" || tutorName === selectedTutor) {
+                            item.style.opacity = '1';
+                        } else {
+                            item.style.opacity = '0.3';
+                        }
+                    });
+                });
 
                 // Handle responsive view changes
                 function handleResize() {
