@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor Availability Calendar</title>
+    <title>Tutor Actual Availability Calendar</title>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <style>
@@ -116,31 +116,221 @@
             font-size: 1.1rem;
         }
 
-        .filter-group select {
+        /* Multi-select tutor filter styles */
+        .tutor-filter-container {
+            position: relative;
             width: 100%;
-            max-width: 300px;
-            padding: 16px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-            color: #2d3748;
-            cursor: pointer;
+            max-width: 500px;
         }
 
-        .filter-group select:focus {
-            outline: none;
+        .selected-tutors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 50px;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: text;
+            transition: all 0.3s ease;
+            align-items: flex-start;
+            align-content: flex-start;
+        }
+
+        .selected-tutors:focus-within {
             border-color: #667eea;
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             transform: translateY(-2px);
         }
 
-        .filter-group select:hover {
+        .selected-tutors:hover {
             border-color: #cbd5e0;
             transform: translateY(-1px);
+        }
+
+        .tutor-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s ease;
+            animation: chipSlideIn 0.3s ease-out;
+        }
+
+        @keyframes chipSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .tutor-chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .chip-remove {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .chip-remove:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .tutor-search-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 4px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .tutor-search-input::placeholder {
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .tutor-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .tutor-dropdown.show {
+            display: block;
+            animation: dropdownSlide 0.2s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tutor-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tutor-option:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tutor-option.selected {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .tutor-option::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .clear-all-btn {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+            margin-top: 15px;
+        }
+
+        .clear-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .clear-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .filter-status {
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            color: #4c51bf;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        .filter-status.show {
+            display: block;
+            animation: statusSlide 0.3s ease-out;
+        }
+
+        @keyframes statusSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .calendar-container {
@@ -308,6 +498,14 @@
             background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
         }
 
+        .fc-event[data-tutor*="James"] {
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+        }
+
+        .fc-event[data-tutor*="Bowman"] {
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+        }
+
         /* Time Grid Styling */
         .fc .fc-timegrid-axis {
             background: rgba(248, 250, 252, 0.9);
@@ -444,7 +642,7 @@
                 padding: 20px;
             }
             
-            .filter-group select {
+            .tutor-filter-container {
                 max-width: 100%;
             }
             
@@ -471,6 +669,15 @@
                 justify-content: center;
                 gap: 5px;
             }
+
+            .selected-tutors {
+                min-height: 60px;
+            }
+
+            .tutor-chip {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -481,6 +688,11 @@
             .fc-event {
                 font-size: 0.75rem;
                 padding: 2px 4px;
+            }
+
+            .tutor-search-input {
+                min-width: 100px;
+                font-size: 14px;
             }
         }
 
@@ -521,6 +733,10 @@
             transform: translateY(-1px);
         }
 
+        .legend-item.filtered {
+            opacity: 0.3;
+        }
+
         .legend-color {
             width: 16px;
             height: 16px;
@@ -543,6 +759,32 @@
         .fc-event.new-event {
             animation: eventFadeIn 0.5s ease-out;
         }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .debug-info.show {
+            display: block;
+        }
+
+        .debug-toggle {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -552,17 +794,27 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>📅 Tutor Availability Calendar</h1>
-            <p>View real-time tutor availability and schedule appointments</p>
+            <h1>📅 Tutor Actual Availability Calendar</h1>
+            <p>View real-time fragmented availability after appointments</p>
         </div>
 
         <!-- Filters -->
         <div class="filters-container">
             <div class="filter-group">
-                <label for="tutorFilter">🎓 Filter by Tutor:</label>
-                <select id="tutorFilter">
-                    <option value="all">All Tutors</option>
-                </select>
+                <label for="tutorFilter">🎓 Filter by Tutors:</label>
+                <div class="tutor-filter-container">
+                    <div class="selected-tutors" id="selectedTutors">
+                        <input type="text" class="tutor-search-input" id="tutorSearchInput" placeholder="Type tutor name to add filter...">
+                    </div>
+                    <div class="tutor-dropdown" id="tutorDropdown">
+                        <!-- Dropdown options will be populated by JavaScript -->
+                    </div>
+                </div>
+                <button class="clear-all-btn" id="clearAllBtn" disabled>Clear All Filters</button>
+                <button class="debug-toggle" id="debugToggle">Show Debug Info</button>
+                <div class="filter-status" id="filterStatus">
+                    <!-- Filter status will be shown here -->
+                </div>
             </div>
         </div>
 
@@ -575,6 +827,14 @@
             
             <div id="calendar"></div>
             
+            <!-- Debug Info -->
+            <div class="debug-info" id="debugInfo">
+                <strong>Debug Information:</strong><br>
+                <div id="debugContent">
+                    <!-- Debug content will be populated here -->
+                </div>
+            </div>
+            
             <!-- Legend -->
             <div class="tutor-legend">
                 <div class="legend-title">👥 Tutor Color Legend</div>
@@ -586,12 +846,15 @@
     </div>
 
     <script>
-        // Configuration
-        const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSj8qL6nzQ57q45IRZf5iWzyBPe_9mZwvvYH8zRe4CJdfc92qFTIs67jwv-sfWx6WM3U-tWeM0cDRE9/pub?gid=2014614666&single=true&output=csv";
+        // Configuration - Updated to use ActualAvailability sheet
+        const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSj8qL6nzQ57q45IRZf5iWzyBPe_9mZwvvYH8zRe4CJdfc92qFTIs67jwv-sfWx6WM3U-tWeM0cDRE9/pub?gid=0&single=true&output=csv";
         
         let calendar;
         let allEvents = [];
         let tutorColors = {};
+        let allTutors = [];
+        let selectedTutors = new Set();
+        let debugMode = false;
         
         // Predefined color schemes for tutors
         const colorSchemes = [
@@ -648,12 +911,91 @@
             calendarContainer.insertBefore(errorDiv, calendarContainer.firstChild);
         }
 
+        function parseTime(timeStr) {
+            // Handle different time formats: "14:00", "2:00 PM", "2PM", etc.
+            if (!timeStr) return null;
+            
+            timeStr = timeStr.trim().toUpperCase();
+            
+            // If it's already in 24-hour format (HH:MM)
+            if (/^\d{1,2}:\d{2}$/.test(timeStr)) {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours * 60 + minutes; // Return minutes since midnight
+            }
+            
+            // Handle AM/PM format
+            let isPM = timeStr.includes('PM');
+            let isAM = timeStr.includes('AM');
+            
+            // Remove AM/PM and clean up
+            timeStr = timeStr.replace(/[AP]M/g, '').trim();
+            
+            // Handle formats like "2:00", "14", "2"
+            let hours, minutes = 0;
+            
+            if (timeStr.includes(':')) {
+                [hours, minutes] = timeStr.split(':').map(Number);
+            } else {
+                hours = parseInt(timeStr);
+            }
+            
+            // Convert to 24-hour format
+            if (isPM && hours < 12) hours += 12;
+            if (isAM && hours === 12) hours = 0;
+            
+            return hours * 60 + minutes; // Return minutes since midnight
+        }
+
+        function formatTime(minutes) {
+            // Convert minutes since midnight back to HH:MM format
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }
+
+        function parseCSVRow(row) {
+            // More robust CSV parsing that handles commas within quoted fields
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim());
+            return result;
+        }
+
+        function updateDebugInfo(data) {
+            const debugContent = document.getElementById('debugContent');
+            debugContent.innerHTML = `
+                <strong>Raw CSV Data Sample:</strong><br>
+                ${data.slice(0, 500)}...<br><br>
+                <strong>Parsed Events Count:</strong> ${allEvents.length}<br>
+                <strong>Tutors Found:</strong> ${allTutors.join(', ')}<br><br>
+                <strong>Sample Events:</strong><br>
+                ${allEvents.slice(0, 3).map(e => 
+                    `- ${e.extendedProps.tutor}: ${e.extendedProps.timeSlot} on ${e.start.split('T')[0]}`
+                ).join('<br>')}
+            `;
+        }
+
         async function loadData() {
             try {
                 updateConnectionStatus('loading');
                 showLoading();
 
-                console.log('Fetching tutor availability data...');
+                console.log('Fetching actual tutor availability data...');
                 const response = await fetch(sheetCSV);
                 
                 if (!response.ok) {
@@ -661,59 +1003,137 @@
                 }
                 
                 const text = await response.text();
-                console.log('CSV data loaded successfully');
+                console.log('CSV data loaded successfully, length:', text.length);
+                
+                if (debugMode) {
+                    updateDebugInfo(text);
+                }
 
-                const rows = text.split("\n").slice(1); // skip header
+                const rows = text.split("\n").filter(row => row.trim() !== '');
+                console.log('Total rows:', rows.length);
+                
+                // Skip header row
+                const dataRows = rows.slice(1);
+                console.log('Data rows:', dataRows.length);
+
                 let events = [];
                 let tutors = new Set();
                 let colorIndex = 0;
+                let processedRows = 0;
 
-                rows.forEach((row, index) => {
-                    const cols = row.split(",");
-                    if (cols.length < 3) return;
+                dataRows.forEach((row, index) => {
+                    try {
+                        const cols = parseCSVRow(row);
+                        
+                        if (cols.length < 3) {
+                            console.log(`Row ${index + 2}: Insufficient columns (${cols.length})`, cols);
+                            return;
+                        }
 
-                    const tutor = cols[0].trim();
-                    const date = cols[1].trim();
-                    const slots = cols[2].trim();
+                        const tutor = cols[0] ? cols[0].trim() : '';
+                        const date = cols[1] ? cols[1].trim() : '';
+                        const availabilityData = cols[2] ? cols[2].trim() : '';
 
-                    if (!tutor || !date) return;
+                        if (!tutor || !date) {
+                            console.log(`Row ${index + 2}: Missing tutor or date`, { tutor, date });
+                            return;
+                        }
 
-                    tutors.add(tutor);
-                    
-                    // Assign color to tutor if not already assigned
-                    if (!tutorColors[tutor]) {
-                        tutorColors[tutor] = colorSchemes[colorIndex % colorSchemes.length];
-                        colorIndex++;
-                    }
+                        // Validate date format
+                        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                        if (!dateRegex.test(date)) {
+                            console.log(`Row ${index + 2}: Invalid date format:`, date);
+                            return;
+                        }
 
-                    if (slots && slots !== "Busy all day" && slots !== "") {
-                        const timeSlots = slots.split(",");
-                        timeSlots.forEach(slot => {
-                            const timeRange = slot.trim();
-                            if (timeRange.includes("-")) {
-                                const [start, end] = timeRange.split("-");
-                                if (start && end) {
-                                    events.push({
-                                        title: `${tutor} - Available`,
-                                        start: `${date}T${start.trim()}`,
-                                        end: `${date}T${end.trim()}`,
-                                        extendedProps: { 
-                                            tutor: tutor,
-                                            timeSlot: timeRange
-                                        },
-                                        backgroundColor: 'transparent',
-                                        borderColor: 'transparent',
-                                        className: 'tutor-event',
-                                        display: 'block'
-                                    });
+                        tutors.add(tutor);
+                        processedRows++;
+                        
+                        // Assign color to tutor if not already assigned
+                        if (!tutorColors[tutor]) {
+                            tutorColors[tutor] = colorSchemes[colorIndex % colorSchemes.length];
+                            colorIndex++;
+                        }
+
+                        // Process availability data
+                        if (availabilityData && 
+                            availabilityData !== "Busy all day" && 
+                            availabilityData !== "No availability" &&
+                            availabilityData !== "") {
+                            
+                            // Split by comma or semicolon to handle multiple time slots
+                            const timeSlots = availabilityData.split(/[,;]/).map(slot => slot.trim()).filter(slot => slot);
+                            
+                            console.log(`Row ${index + 2}: Processing ${timeSlots.length} time slots for ${tutor} on ${date}`);
+                            
+                            timeSlots.forEach((slot, slotIndex) => {
+                                try {
+                                    const timeRange = slot.trim();
+                                    
+                                    // Handle different time range formats
+                                    const timeRangePatterns = [
+                                        /^(\d{1,2}):?(\d{0,2})\s*([AaPp][Mm])?\s*[-–—]\s*(\d{1,2}):?(\d{0,2})\s*([AaPp][Mm])?$/,
+                                        /^(\d{1,2})\s*([AaPp][Mm])?\s*[-–—]\s*(\d{1,2})\s*([AaPp][Mm])?$/
+                                    ];
+                                    
+                                    let startTime, endTime;
+                                    let matched = false;
+                                    
+                                    // Try to parse the time range
+                                    if (timeRange.includes("-") || timeRange.includes("–") || timeRange.includes("—")) {
+                                        const parts = timeRange.split(/[-–—]/).map(p => p.trim());
+                                        if (parts.length === 2) {
+                                            const startMinutes = parseTime(parts[0]);
+                                            const endMinutes = parseTime(parts[1]);
+                                            
+                                            if (startMinutes !== null && endMinutes !== null) {
+                                                startTime = formatTime(startMinutes);
+                                                endTime = formatTime(endMinutes);
+                                                matched = true;
+                                            }
+                                        }
+                                    }
+                                    
+                                    if (matched && startTime && endTime) {
+                                        const event = {
+                                            title: `${tutor} - Available`,
+                                            start: `${date}T${startTime}`,
+                                            end: `${date}T${endTime}`,
+                                            extendedProps: { 
+                                                tutor: tutor,
+                                                timeSlot: `${startTime}-${endTime}`,
+                                                originalSlot: timeRange,
+                                                rowIndex: index + 2
+                                            },
+                                            backgroundColor: 'transparent',
+                                            borderColor: 'transparent',
+                                            className: 'tutor-event',
+                                            display: 'block'
+                                        };
+                                        
+                                        events.push(event);
+                                        console.log(`Added event: ${tutor} ${date} ${startTime}-${endTime}`);
+                                    } else {
+                                        console.log(`Row ${index + 2}, Slot ${slotIndex + 1}: Could not parse time range:`, timeRange);
+                                    }
+                                } catch (slotError) {
+                                    console.error(`Row ${index + 2}, Slot ${slotIndex + 1}: Error processing slot:`, slot, slotError);
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            console.log(`Row ${index + 2}: No availability or busy all day for ${tutor} on ${date}`);
+                        }
+                    } catch (rowError) {
+                        console.error(`Row ${index + 2}: Error processing row:`, row, rowError);
                     }
                 });
 
-                console.log(`Loaded ${events.length} availability slots for ${tutors.size} tutors`);
+                console.log(`Processed ${processedRows} rows, created ${events.length} availability slots for ${tutors.size} tutors`);
                 updateConnectionStatus('connected');
+                
+                if (debugMode) {
+                    updateDebugInfo(text);
+                }
                 
                 return { events, tutors: Array.from(tutors) };
                 
@@ -734,6 +1154,7 @@
             tutors.forEach(tutor => {
                 const legendItem = document.createElement('div');
                 legendItem.className = 'legend-item';
+                legendItem.setAttribute('data-tutor', tutor);
                 
                 const colorBox = document.createElement('div');
                 colorBox.className = 'legend-color';
@@ -754,8 +1175,10 @@
             let css = '';
             
             Object.entries(tutorColors).forEach(([tutor, color]) => {
+                // Create CSS rule that matches tutor name in data-tutor attribute
+                const escapedTutor = tutor.replace(/[.*+?^${}()|[\]\\]/g, '\\                case 'connected':');
                 css += `
-                    .fc-event[data-tutor*="${tutor}"] {
+                    .fc-event[data-tutor*="${escapedTutor}"] {
                         background: ${color} !important;
                         border: none !important;
                     }
@@ -766,25 +1189,237 @@
             document.head.appendChild(style);
         }
 
-        function formatEventTitle(eventInfo) {
-            const tutor = eventInfo.event.extendedProps.tutor;
-            const timeSlot = eventInfo.event.extendedProps.timeSlot;
-            return `${tutor}\n${timeSlot}`;
+        function createTutorChip(tutorName) {
+            const chip = document.createElement('div');
+            chip.className = 'tutor-chip';
+            chip.setAttribute('data-tutor', tutorName);
+            
+            const label = document.createElement('span');
+            label.textContent = tutorName;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'chip-remove';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => removeTutorFilter(tutorName);
+            
+            chip.appendChild(label);
+            chip.appendChild(removeBtn);
+            
+            return chip;
+        }
+
+        function addTutorFilter(tutorName) {
+            if (!selectedTutors.has(tutorName)) {
+                selectedTutors.add(tutorName);
+                
+                const selectedContainer = document.getElementById('selectedTutors');
+                const searchInput = document.getElementById('tutorSearchInput');
+                
+                const chip = createTutorChip(tutorName);
+                selectedContainer.insertBefore(chip, searchInput);
+                
+                updateFilter();
+                updateClearButton();
+                updateFilterStatus();
+                hideDropdown();
+                searchInput.value = '';
+            }
+        }
+
+        function removeTutorFilter(tutorName) {
+            selectedTutors.delete(tutorName);
+            
+            const chip = document.querySelector(`.tutor-chip[data-tutor="${tutorName}"]`);
+            if (chip) {
+                chip.style.animation = 'chipSlideIn 0.3s ease-out reverse';
+                setTimeout(() => chip.remove(), 300);
+            }
+            
+            updateFilter();
+            updateClearButton();
+            updateFilterStatus();
+        }
+
+        function clearAllFilters() {
+            selectedTutors.clear();
+            
+            const chips = document.querySelectorAll('.tutor-chip');
+            chips.forEach(chip => {
+                chip.style.animation = 'chipSlideIn 0.3s ease-out reverse';
+                setTimeout(() => chip.remove(), 300);
+            });
+            
+            setTimeout(() => {
+                updateFilter();
+                updateClearButton();
+                updateFilterStatus();
+            }, 300);
+        }
+
+        function updateFilter() {
+            if (!calendar) return;
+            
+            calendar.getEvents().forEach(event => {
+                const eventTutor = event.extendedProps.tutor;
+                
+                if (selectedTutors.size === 0 || selectedTutors.has(eventTutor)) {
+                    event.setProp('display', 'auto');
+                } else {
+                    event.setProp('display', 'none');
+                }
+            });
+            
+            // Update legend visibility
+            const legendItems = document.querySelectorAll('.legend-item');
+            legendItems.forEach(item => {
+                const tutorName = item.getAttribute('data-tutor');
+                if (selectedTutors.size === 0 || selectedTutors.has(tutorName)) {
+                    item.classList.remove('filtered');
+                } else {
+                    item.classList.add('filtered');
+                }
+            });
+        }
+
+        function updateClearButton() {
+            const clearBtn = document.getElementById('clearAllBtn');
+            clearBtn.disabled = selectedTutors.size === 0;
+        }
+
+        function updateFilterStatus() {
+            const statusDiv = document.getElementById('filterStatus');
+            
+            if (selectedTutors.size === 0) {
+                statusDiv.classList.remove('show');
+            } else {
+                const tutorList = Array.from(selectedTutors).join(', ');
+                const eventCount = calendar ? calendar.getEvents().filter(e => e.display !== 'none').length : 0;
+                statusDiv.innerHTML = `Showing ${eventCount} availability slots for: ${tutorList}`;
+                statusDiv.classList.add('show');
+            }
+        }
+
+        function showDropdown() {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.classList.add('show');
+        }
+
+        function hideDropdown() {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.classList.remove('show');
+        }
+
+        function populateDropdown(filteredTutors = allTutors) {
+            const dropdown = document.getElementById('tutorDropdown');
+            dropdown.innerHTML = '';
+            
+            filteredTutors.forEach(tutor => {
+                const option = document.createElement('div');
+                option.className = 'tutor-option';
+                option.textContent = tutor;
+                
+                if (selectedTutors.has(tutor)) {
+                    option.classList.add('selected');
+                }
+                
+                option.onclick = () => {
+                    if (!selectedTutors.has(tutor)) {
+                        addTutorFilter(tutor);
+                    }
+                };
+                
+                dropdown.appendChild(option);
+            });
+        }
+
+        function setupTutorFilter() {
+            const searchInput = document.getElementById('tutorSearchInput');
+            const selectedContainer = document.getElementById('selectedTutors');
+            const clearBtn = document.getElementById('clearAllBtn');
+            const debugToggle = document.getElementById('debugToggle');
+            
+            // Debug toggle
+            debugToggle.addEventListener('click', () => {
+                debugMode = !debugMode;
+                const debugInfo = document.getElementById('debugInfo');
+                if (debugMode) {
+                    debugInfo.classList.add('show');
+                    debugToggle.textContent = 'Hide Debug Info';
+                } else {
+                    debugInfo.classList.remove('show');
+                    debugToggle.textContent = 'Show Debug Info';
+                }
+            });
+            
+            // Focus handling
+            selectedContainer.addEventListener('click', (e) => {
+                if (e.target === selectedContainer) {
+                    searchInput.focus();
+                }
+            });
+            
+            // Search input handling
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                if (searchTerm) {
+                    const filteredTutors = allTutors.filter(tutor => 
+                        tutor.toLowerCase().includes(searchTerm) && !selectedTutors.has(tutor)
+                    );
+                    populateDropdown(filteredTutors);
+                    showDropdown();
+                } else {
+                    hideDropdown();
+                }
+            });
+            
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value) {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filteredTutors = allTutors.filter(tutor => 
+                        tutor.toLowerCase().includes(searchTerm) && !selectedTutors.has(tutor)
+                    );
+                    populateDropdown(filteredTutors);
+                    showDropdown();
+                }
+            });
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const searchTerm = searchInput.value.trim();
+                    const exactMatch = allTutors.find(tutor => 
+                        tutor.toLowerCase() === searchTerm.toLowerCase()
+                    );
+                    
+                    if (exactMatch && !selectedTutors.has(exactMatch)) {
+                        addTutorFilter(exactMatch);
+                    }
+                } else if (e.key === 'Escape') {
+                    hideDropdown();
+                    searchInput.blur();
+                }
+            });
+            
+            // Clear all button
+            clearBtn.addEventListener('click', clearAllFilters);
+            
+            // Click outside to hide dropdown
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.tutor-filter-container')) {
+                    hideDropdown();
+                }
+            });
         }
 
         document.addEventListener("DOMContentLoaded", async function() {
             try {
                 const { events, tutors } = await loadData();
                 allEvents = events;
+                allTutors = tutors;
 
-                // Populate tutor filter dropdown
-                const tutorFilter = document.getElementById("tutorFilter");
-                tutors.forEach(tutor => {
-                    const option = document.createElement("option");
-                    option.value = tutor;
-                    option.textContent = tutor;
-                    tutorFilter.appendChild(option);
-                });
+                // Setup tutor filter
+                setupTutorFilter();
 
                 // Create tutor legend
                 createTutorLegend(tutors);
@@ -806,8 +1441,9 @@
                         const tutor = info.event.extendedProps.tutor;
                         info.el.setAttribute('data-tutor', tutor);
                         
-                        // Add hover tooltip
-                        info.el.setAttribute('title', `${tutor}\nTime: ${info.event.extendedProps.timeSlot}`);
+                        // Add hover tooltip with more detailed info
+                        const tooltip = `${tutor}\nTime: ${info.event.extendedProps.timeSlot}\nOriginal: ${info.event.extendedProps.originalSlot || 'N/A'}`;
+                        info.el.setAttribute('title', tooltip);
                         
                         // Add animation class
                         setTimeout(() => {
@@ -816,7 +1452,11 @@
                     },
                     eventClick: function(info) {
                         // Handle event click - could open booking modal
-                        alert(`Book with ${info.event.extendedProps.tutor}\nTime: ${info.event.extendedProps.timeSlot}`);
+                        const tutor = info.event.extendedProps.tutor;
+                        const timeSlot = info.event.extendedProps.timeSlot;
+                        const originalSlot = info.event.extendedProps.originalSlot;
+                        
+                        alert(`Book with ${tutor}\nAvailable Time: ${timeSlot}\n${originalSlot ? `Original Slot: ${originalSlot}` : ''}`);
                     },
                     loading: function(isLoading) {
                         if (isLoading) {
@@ -829,30 +1469,6 @@
 
                 calendar.render();
 
-                // Filter by tutor dropdown functionality
-                tutorFilter.addEventListener("change", function() {
-                    const selectedTutor = this.value;
-                    
-                    calendar.getEvents().forEach(event => {
-                        if (selectedTutor === "all" || event.extendedProps.tutor === selectedTutor) {
-                            event.setProp('display', 'auto');
-                        } else {
-                            event.setProp('display', 'none');
-                        }
-                    });
-                    
-                    // Update legend visibility
-                    const legendItems = document.querySelectorAll('.legend-item');
-                    legendItems.forEach(item => {
-                        const tutorName = item.querySelector('span').textContent;
-                        if (selectedTutor === "all" || tutorName === selectedTutor) {
-                            item.style.opacity = '1';
-                        } else {
-                            item.style.opacity = '0.3';
-                        }
-                    });
-                });
-
                 // Handle responsive view changes
                 function handleResize() {
                     if (window.innerWidth < 768) {
@@ -864,7 +1480,7 @@
 
                 window.addEventListener('resize', handleResize);
 
-                console.log('Calendar initialized successfully');
+                console.log('Calendar initialized successfully with', events.length, 'events');
 
             } catch (error) {
                 console.error('Failed to initialize calendar:', error);
